@@ -56,7 +56,7 @@ jobs:
           context: ./${{ inputs.PROJECT_DIRECTORY }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labe' )}}
+          labels: ${{ steps.meta.outputs.labels' )}}
         
       # Delete Docker Image
       - name: Delete docker images ${{ inputs.PROJECT_DIRECTORY }} after build & push
