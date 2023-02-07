@@ -8,7 +8,7 @@ on:
   workflow_call:
     inputs:
       DOCKER_REGISTRY_URL:
-        required: false
+        required: true
         type: string
         # example registry.blabla.com
       PROJECT_NAME:
