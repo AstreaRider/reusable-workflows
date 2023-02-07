@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      DOCKER_REGISTRY_NAME:
-        required: false
-        type: string
-        default: 'hub.docker.com'
+      # DOCKER_REGISTRY_NAME:
+      #   required: false
+      #   type: string
+      #   default: 'hub.docker.com'
         # example registry.blabla.com
       PROJECT_NAME:
         required: true
@@ -37,7 +37,7 @@ jobs:
       - name: login to ${{ inputs.DOCKER_REGISTRY_NAME }}
         uses: docker/login-action@v2
         with:
-          registry: ${{ inputs.DOCKER_REGISTRY_NAME }}
+          # registry: ${{ inputs.DOCKER_REGISTRY_NAME }}
           username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}   
 
