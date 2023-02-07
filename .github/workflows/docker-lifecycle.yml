@@ -43,7 +43,7 @@ jobs:
 
       # Docker Image Meta Data
       - name: ${{ inputs.PROJECT_DIRECTORY }} docker image meta data
-        id: meta_${{ inputs.PROJECT_DIRECTORY }}
+        id: meta
         uses: docker/metadata-action@v4
         with:
           images: ${{ inputs.DOCKER_REGISTRY_NAME }}/${{ inputs.PROJECT_NAME}}/${{ inputs.PROJECT_DIRECTORY }}
@@ -55,11 +55,11 @@ jobs:
         with:
           context: ./${{ inputs.PROJECT_DIRECTORY }}
           push: true
-          tags: ${{ format('steps.meta_{0}.outputs.tags', inputs.PROJECT_DIRECTORY )}}
-          labels: ${{ format('steps.meta_{0}.outputs.labels', inputs.PROJECT_DIRECTORY )}}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labe' )}}
         
       # Delete Docker Image
       - name: Delete docker images ${{ inputs.PROJECT_DIRECTORY }} after build & push
         run: |
-          docker rmi ${{ format('steps.meta_{0}.outputs.tags', inputs.PROJECT_DIRECTORY )}}
+          docker rmi ${{ steps.meta.outputs.tags }}
           docker system prune --force
