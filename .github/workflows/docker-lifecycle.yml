@@ -8,14 +8,18 @@ on:
   workflow_call:
     inputs:
       DOCKER_REGISTRY_NAME:
-        required: true
+        required: false
         type: string
+        default: 'hub.docker.com'
+        # example registry.blabla.com
       PROJECT_NAME:
         required: true
         type: string
+        # example test-reusable
       PROJECT_DIRECTORY:
         required: true
         type: string
+        # example backend
     secrets:
       DOCKER_REGISTRY_USERNAME:
         description: 'Your Private Registry Username'
