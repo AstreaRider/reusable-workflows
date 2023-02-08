@@ -10,15 +10,15 @@ on:
       DOCKER_REGISTRY_URL:
         required: true
         type: string
-        # example registry.blabla.com
-      PROJECT_NAME:
+      WORKING_DIRECTORY:
         required: true
         type: string
-        # example test-reusable
-      PROJECT_DIRECTORY:
+      REPOSITORY_NAME:
         required: true
         type: string
-        # example backend
+      REPOSITORY_OWNER:
+        required: true
+        type: string
     secrets:
       DOCKER_REGISTRY_USERNAME:
         description: 'Your Private Registry Username'
@@ -26,12 +26,22 @@ on:
       DOCKER_REGISTRY_PASSWORD:
         description: 'Your Private Registry Password'
         required: true
+      GH_PAT:
+        description: 'Your GitHub PAT'
+        required: true
       
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
+      # Checkout Repo
+      - name: checkout repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.REPOSITORY_OWNER}}/${{ inputs.REPOSITORY_NAME }}
+          token: ${{ secrets.GH_PAT }}
+
       # Login Docker 
       - name: login to ${{ inputs.DOCKER_REGISTRY_URL }}
         uses: docker/login-action@v2
@@ -41,24 +51,24 @@ jobs:
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}   
 
       # Docker Image Meta Data
-      - name: ${{ inputs.PROJECT_DIRECTORY }} docker image meta data
+      - name: ${{ inputs.WORKING_DIRECTORY }} docker image meta data
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ inputs.DOCKER_REGISTRY_URL }}/${{ inputs.PROJECT_NAME}}/${{ inputs.PROJECT_DIRECTORY }}
+          images: ${{ inputs.DOCKER_REGISTRY_URL }}/${{ inputs.REPOSITORY_NAME}}/${{ inputs.WORKING_DIRECTORY }}
           tags: type=raw,value=latest,enable={{is_default_branch}} 
       
       # Build and Push Docker Image
-      - name: build and push docker image ${{ inputs.PROJECT_DIRECTORY }}
+      - name: build and push docker image ${{ inputs.WORKING_DIRECTORY }}
         uses: docker/build-push-action@v3
         with:
-          context: ./${{ inputs.PROJECT_DIRECTORY }}
+          context: ./${{ inputs.WORKING_DIRECTORY }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
         
       # Delete Docker Image
-      - name: Delete docker images ${{ inputs.PROJECT_DIRECTORY }} after build & push
+      - name: Delete docker images ${{ inputs.WORKING_DIRECTORY }} after build & push
         run: |
           docker rmi ${{ steps.meta.outputs.tags }}
           docker system prune --force
