@@ -1,7 +1,4 @@
-name: Docker Lifecycle
-
-# login to your private registry, build & push image, and then delete image from your runner
-# this is for monorepo project 
+name: Docker Continous Integration
 
 on:
   workflow_dispatch:
